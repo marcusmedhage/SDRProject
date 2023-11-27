@@ -252,7 +252,6 @@ blocks:
     alias: ''
     comment: ''
     en_uvec: 'True'
-    log_level: info
   states:
     bus_sink: false
     bus_source: false
@@ -424,7 +423,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [352, 812.0]
+    coordinate: [648, 468.0]
     rotation: 0
     state: true
 - name: qtgui_sink_x_0
@@ -453,7 +452,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [192, 508.0]
+    coordinate: [304, 516.0]
     rotation: 0
     state: true
 - name: qtgui_vector_sink_f_0
@@ -496,7 +495,6 @@ blocks:
     label7: ''
     label8: ''
     label9: ''
-    legend: 'True'
     maxoutbuf: '0'
     minoutbuf: '0'
     name: '""'
@@ -535,7 +533,7 @@ blocks:
   parameters:
     affinity: ''
     alias: ''
-    ant0: '"RX2"'
+    ant0: '"TX/RX"'
     ant1: '"RX2"'
     ant10: '"RX2"'
     ant11: '"RX2"'
@@ -976,12 +974,10 @@ connections:
 - [blocks_stream_to_vector_decimator_0, '0', fft_vxx_0, '0']
 - [epy_block_1_0, '0', blocks_null_sink_0, '0']
 - [epy_block_1_0, '1', qtgui_vector_sink_f_0, '0']
-- [epy_block_1_0, messageOutput, blocks_message_debug_0_0, log]
+- [epy_block_1_0, messageOutput, blocks_message_debug_0_0, print]
 - [fft_vxx_0, '0', blocks_complex_to_mag_squared_0, '0']
-- [qtgui_sink_x_0, freq, uhd_usrp_source_0, command]
 - [uhd_usrp_source_0, '0', blocks_add_xx_0, '1']
 - [uhd_usrp_source_0, '0', qtgui_sink_x_0, '0']
 
 metadata:
   file_format: 1
-  grc_version: 3.10.7.0
