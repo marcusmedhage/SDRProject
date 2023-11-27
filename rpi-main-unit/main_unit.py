@@ -9,18 +9,19 @@ from pyrf24 import RF24, RF24Network, RF24NetworkHeader, RF24_PA_LOW, RF24_2MBPS
 
 radio = RF24(17, 0) # CSN and CE PIN integers
 network = RF24Network(radio)
-# Adress must be a buffer protcol object
+
 
 previousMillis = 0
 
+# Number representing the different message types from RF24Network
 SENSOR_DATA = 0
 CONFIG_COMMAND = 1
 
 
-address_self = 0o0 # main node
+address_self = 0o0 # Node 0 is always the main node.
 default_channel = 85
 
-addresses = [0o5]
+addresses = [0o5] # Address of other units
 
 print("Starting!")
 if not radio.begin():
