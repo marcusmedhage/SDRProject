@@ -4,14 +4,14 @@ import argparse
 import struct
 from enum import Enum
 import random
-from pyrf24 import RF24, RF24Network, RF24NetworkHeader, RF24_PA_LOW, RF24_2MBPS
+from pyrf24 import RF24, RF24Network, RF24NetworkHeader, RF24_PA_LOW, RF24_2MBPS, RF24_1MBPS
 
 
 radio = RF24(17, 0) # CSN and CE PIN integers
 network = RF24Network(radio)
 
 
-previousMillis = 0
+previousMillis = int(time.time_ns()/1000000)
 
 # Number representing the different message types from RF24Network
 SENSOR_DATA = 0
@@ -33,7 +33,7 @@ if not radio.begin():
 
 radio.channel = default_channel
 network.begin(address_self)
-radio.setDataRate(RF24_2MBPS)
+radio.setDataRate(RF24_1MBPS)
 radio.tx_delay = 200 # uS delay, needed since arduino slower
 radio.set_auto_ack(True)
 
@@ -79,7 +79,7 @@ try:
     while True:
         network.update()
         checkIncomingData()
-        send_then_switch(15000)
+        #send_then_switch(1000000)
 except KeyboardInterrupt:
     print("Shuttting down.")
     radio.power = False
