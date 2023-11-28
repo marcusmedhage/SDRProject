@@ -9,8 +9,6 @@ from pyrf24 import RF24, RF24Network, RF24Mesh, RF24NetworkHeader, RF24_PA_LOW, 
 start = time.monotonic()
 
 def millis():
-    """:Returns: Delta time since started example in milliseconds. Wraps value around
-    the width of a ``long`` integer."""
     return int((time.monotonic() - start) * 1000) % (2**32)
 
 radio = RF24(17, 0) # CSN and CE PIN integers
@@ -22,18 +20,21 @@ mesh.setNodeID(0)
 previousMillis = 0
 
 # Number representing the different message types from RF24Network
-SENSOR_DATA = 0
-CONFIG_COMMAND = 1
+SENSOR_DATA = 1
+CONFIG_COMMAND = 2
 
 
 address_self = 0o0 # Node 0 is always the main node.
-default_channel = 85
+default_channel = 65
+
+nodes = [5]
+
 
 if not radio.begin():
     raise OSError("Radio hardware not responding")
 radio.set_pa_level(RF24_PA_LOW)
 
-if not mesh.begin():
+if not mesh.begin(default_channel):
     if radio.is_chip_connected:
         try:
             print("Could not connect to network. Attempting to reconnect...")
@@ -46,30 +47,46 @@ if not mesh.begin():
         raise OSError("Radio hardware not responding.")
 radio.print_pretty_details()
 
-
-
 TIMER = 0
+
+def checkIncomingData():
+
+    #has_payload, pipe_number = radio.available_pipe()
+    #if has_payload:
+    #    print(pipe_number)
+
+    while network.available():
+        print("network available")
+        header, payload = network.read()
+        print(header.to_string())
+        
+        if header.type == SENSOR_DATA:
+            C, H = struct.unpack("BB",payload)
+            senderID = mesh.get_node_id(header.from_node)
+            print(f"Package from: {senderID}")
+            print(f"C: {C}      H: {H}")
+
+            #radio.print_pretty_details()
+
+
+def sendChannelSwitch(new_channel, node):
+    #header = RF24NetworkHeader(address, CONFIG_COMMAND)
+    msg = struct.pack("B", new_channel)
+    radio.stopListening()
+    #network.write(header, msg)
+    mesh.write(msg, CONFIG_COMMAND, node)
+    radio.startListening()
+
+def sendChannelSwitchAll(new_channel):
+    for node in nodes:
+        sendChannelSwitch(new_channel, node)
 
 try:
     while True:
         # Call mesh.update to keep the network updated
         mesh.update()
-
-        if (millis() - TIMER) >= 1000:
-            TIMER = millis()
-
-            if not mesh.write(struct.pack("L", TIMER), ord("M")):
-                # If a write fails, check connectivity to the mesh network
-                if not mesh.checkConnection():
-                    # The address could be refreshed per a specified time frame
-                    # or only when sequential writes fail, etc.
-                    print("Send fail. Renewing Address...")
-                    while mesh.renewAddress() == 0o4444:
-                        print("Renewing Address...")
-                else:
-                    print("Send fail, Test OK")
-            else:
-                print("Send OK:", TIMER)
+        mesh.DHCP()
+        checkIncomingData()
         time.sleep(0.001)  # delay 1 ms
 except KeyboardInterrupt:
     print("Powering down.")
