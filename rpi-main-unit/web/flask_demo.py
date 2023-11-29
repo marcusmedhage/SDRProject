@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, render_template
 
 
 
@@ -8,6 +8,9 @@ app = Flask(__name__)
 # which tells the application which URL should call 
 # the associated function.
 @app.route('/')
+def table():
+    return render_template("table.html")
+
 # ‘/’ URL is bound with hello_world() function.
 def hello_world():
     return 'Hello World'
