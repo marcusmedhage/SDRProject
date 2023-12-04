@@ -5,6 +5,7 @@ import struct
 from enum import Enum
 import random
 from pyrf24 import RF24, RF24Network, RF24Mesh, RF24NetworkHeader, RF24_PA_LOW, RF24_2MBPS, MESH_DEFAULT_ADDRESS
+from database.db_interface import *
 
 start = time.monotonic()
 
@@ -16,13 +17,14 @@ network = RF24Network(radio)
 mesh = RF24Mesh(radio, network)
 
 mesh.setNodeID(0)
+#mesh.setStaticAddress(1, 2)
 
 previousMillis = 0
 
 # Number representing the different message types from RF24Network
 SENSOR_DATA = 1
 CONFIG_COMMAND = 2
-
+SDR_COMMAND = 3
 
 address_self = 0o0 # Node 0 is always the main node.
 default_channel = 85
@@ -50,6 +52,10 @@ TIMER = 0
 
 def checkIncomingData():
 
+    has_payload, pipe_number = radio.available_pipe()
+    if has_payload:
+        print(pipe_number)
+
     while network.available():
         print("network available")
         header, payload = network.read()
@@ -61,6 +67,12 @@ def checkIncomingData():
             print(f"Package from: {senderID}")
             print(f"C: {C}      H: {H}")
 
+            add_measurement(senderID, "Celsius", C)
+            add_measurement(senderID, "Humidity %", H)
+        
+        if header.type == SDR_COMMAND:
+            print("sdr command")
+            print(payload)
 
 def sendChannelSwitch(new_channel, node):
     msg = struct.pack("B", new_channel)
