@@ -23,15 +23,13 @@ def get_measurement_latest(sql_node_id):
     FROM measurements m1
     JOIN ( SELECT type, MAX(time) AS max_time
         FROM measurements
-        WHERE node_id = {sql_node_id}
+        WHERE node_id = ?
         GROUP BY type
     ) m2 ON m1.type = m2.type AND m1.time = m2.max_time
-    WHERE m1.node_id = {sql_node_id};"""
+    WHERE m1.node_id = ?"""
     #with open('/home/sdrgroup/Documents/SDRProject/rpi-main-unit/database/get_latest.sql', 'r') as sql_file:
     #   sql_script = sql_file.read()
-    
-    cur = db.cursor()
-    cur.execute(command)
+    cur.execute(command, (sql_node_id, sql_node_id))
     values = cur.fetchall()
     
     cur.close()

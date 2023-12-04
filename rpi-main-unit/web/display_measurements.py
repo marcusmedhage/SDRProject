@@ -9,8 +9,9 @@ app = Flask(__name__)
 @app.route('/')
 def show_measurements():
     
-    nodes = get_nodes()
-
+    nodes = [e[0] for e in get_nodes()]
+    print(nodes[0])
+    print(type(nodes[0]))
     raw_measurements = [
         {'node_id': 1, 'type': 'Temperature', 'value': 22.5, 'timestamp': '2023-03-15 12:00:00'},
         {'node_id': 1, 'type': 'Humidity', 'value': 45, 'timestamp': '2023-03-15 12:05:00'},
@@ -22,7 +23,7 @@ def show_measurements():
         print(data)
         if node not in measurements_by_node:
             measurements_by_node[node] = []
-        measurements_by_node[node].append(measurement)
+        measurements_by_node[node].append({'type' : data})
 
     #for measurement in raw_measurements:
     #    node_id = measurement['node_id']
