@@ -20,16 +20,17 @@ def show_measurements():
     measurements_by_node = {}
     for node in nodes:
         data = get_measurement_latest(node)
-        print(data)
-        if node not in measurements_by_node:
-            measurements_by_node[node] = []
-        measurements_by_node[node].append({'type' : data})
+        #print(data)
+        for p in data:
+            if node not in measurements_by_node:
+                measurements_by_node[node] = []
+            measurements_by_node[node].append({'node_id': p[0], 'type': p[2], 'value': p[3], 'timestamp': p[1]})
 
     #for measurement in raw_measurements:
     #    node_id = measurement['node_id']
     #    if node_id not in measurements_by_node:
     #        measurements_by_node[node_id] = []
-    #    measurements_by_node[node_id].append(measurement)
+    #    measurements_by_node[node_id].append(measurement) # A list of measurements
 
     return render_template('measurements.html', measurements_by_node=measurements_by_node)
 
@@ -37,4 +38,4 @@ def show_measurements():
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host = "0.0.0.0", debug=True)

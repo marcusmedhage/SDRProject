@@ -6,6 +6,7 @@ from enum import Enum
 import random
 from pyrf24 import RF24, RF24Network, RF24Mesh, RF24NetworkHeader, RF24_2MBPS, MESH_DEFAULT_ADDRESS
 from pyrf24 import RF24_PA_LOW, RF24_PA_MIN, RF24_PA_HIGH
+from database.db_interface import *
 
 start = time.monotonic()
 
@@ -29,7 +30,7 @@ QUIET_COMMAND = 4
 address_self = 0o0 # Node 0 is always the main node.
 default_channel = 85
 
-nodes = [2]
+nodes = [1,2,3,4,5]
 
 
 if not radio.begin():
@@ -65,12 +66,15 @@ def checkIncomingData():
         print("network available")
         header, payload = network.read()
         print(header.to_string())
-        
+        print((header.type))
         if header.type == SENSOR_DATA:
             C, H = struct.unpack("BB",payload)
             senderID = mesh.get_node_id(header.from_node)
             print(f"Package from: {senderID}")
             print(f"C: {C}      H: {H}")
+
+            add_measurement(senderID, "Celsius", C)
+            add_measurement(senderID, "Humidity %", H)
 
         if header.type == SDR_COMMAND:
             print("sdr command")
