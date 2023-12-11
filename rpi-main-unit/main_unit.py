@@ -14,8 +14,8 @@ network = RF24Network(radio)
 previousMillis = int(time.time_ns()/1000000)
 
 # Number representing the different message types from RF24Network
-SENSOR_DATA = 0
-CONFIG_COMMAND = 1
+SENSOR_DATA = 1
+CONFIG_COMMAND = 2
 
 
 address_self = 0o0 # Node 0 is always the main node.

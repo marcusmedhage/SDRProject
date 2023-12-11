@@ -63,7 +63,7 @@ def checkIncomingData():
         print(repr(msg))
 
     while network.available():
-        print("network available")
+        print("Network available")
         header, payload = network.read()
         print(header.to_string())
         print((header.type))
