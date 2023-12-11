@@ -6,7 +6,7 @@
 RF24 radio(7, 8); // CE, CSN/CS 
 
 const byte address[3] = "666";
-const int intervalMillis = 6000;
+const int intervalMillis = 10000;
 unsigned long previousMillis = millis();
 
 /*
@@ -21,8 +21,9 @@ RF24_PA_MAX (3) 	0 dBm 	7 dBm 	4 dBm
 void setup() {
   Serial.begin(115200);
   radio.begin();
-  radio.setPALevel(RF24_PA_MIN);  // change PA level here
+  radio.setPALevel(RF24_PA_HIGH);  // change PA level here
   radio.openWritingPipe(address);
+  radio.setDataRate(RF24_250KBPS);
   int newChannel = 90;
   radio.setChannel(newChannel);
 }
@@ -40,8 +41,9 @@ void loop() {
 
   if (currentMillis - previousMillis >= intervalMillis) { // transmits in intervals
     previousMillis = currentMillis;
-    int newChannel = 90 + random(0);
+    int newChannel = 84 + random(5);
     radio.setChannel(newChannel);
+    Serial.println("Using channel: " + newChannel);
   } // end if internal
 
 }
