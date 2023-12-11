@@ -105,7 +105,8 @@ def sendChannelSwitch(new_channel, node, debug = False):
     ok = mesh.write(msg, CONFIG_COMMAND, node)
     radio.startListening()
     if not ok and debug:
-        print("Problem sending switch command to node: " + str(node))
+        #print("Problem sending switch command to node: " + str(node))
+        pass
     elif debug:
         print("Switch command received by node: " + str(node))
     return ok
@@ -124,7 +125,8 @@ def sendQuiet(quiet, node, debug = False):
     ok = mesh.write(msg, QUIET_COMMAND, node)
     radio.startListening()
     if not ok and debug:
-        print("Problem sending quiet command to node: " + str(node))
+        #print("Problem sending quiet command to node: " + str(node))
+        pass
     elif debug:
         print("Quiet command received by node: " + str(node))
     return ok

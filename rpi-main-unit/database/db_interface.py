@@ -7,7 +7,7 @@ def add_measurement(node_id, unit, value, time=None):
     if time == None:
         current_time = datetime.datetime.now()
         # Time in 'YYYY-MM-DD HH:MM:SS' format for use with database
-        time = current_time.strftime('%Y-%m-%d %H:%M:%S')
+        time = current_time.strftime('%Y-%m-%d %H:%M:%S.%f')
     command = "INSERT INTO measurements VALUES (?, ?, ?, ?);"
     cur.execute(command, (node_id, time, unit, value))
 
